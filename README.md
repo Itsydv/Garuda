@@ -1,4 +1,4 @@
-# Garuda 🔎�
+# Garuda 🔎
 
 [![version-1.0](https://img.shields.io/badge/version-1.3-green)](https://github.com/Datalux/Osintgram/releases/tag/1.3)
 [![Python3](https://img.shields.io/badge/language-Python3-red)](https://img.shields.io/badge/language-Python3-red)
