@@ -64,7 +64,7 @@ class Garuda:
 
     def get_followers(self):
         if self.check_private_profile():
-            return
+            return None
 
         pc.printout(f"Searching for {self.target}'s followers...\n")
 
@@ -94,29 +94,11 @@ class Garuda:
             }
             followers.append(u)
 
-        # json_data = {}
-        # followings_list = []
-
-        # for node in followers:
-        #     if self.jsonDump:
-        #         follow = {
-        #             'id': node['id'],
-        #             'username': node['username'],
-        #             'full_name': node['full_name']
-        #         }
-        #         followings_list.append(follow)
-
-        # if self.jsonDump:
-        #     json_data['followers'] = followers
-        #     json_file_name = self.output_dir + "/" + self.target + "_followers.json"
-        #     with open(json_file_name, 'w') as f:
-        #         json.dump(json_data, f)
-
         return followers
 
     def get_followings(self):
         if self.check_private_profile():
-            return
+            return None
 
         pc.printout(f"Searching for {self.target}'s followings...\n")
 
@@ -146,28 +128,12 @@ class Garuda:
             }
             followings.append(u)
 
-        # json_data = {}
-        # followings_list = []
-
-        # for node in followings:
-        #     if self.jsonDump:
-        #         follow = {
-        #             'id': node['id'],
-        #             'username': node['username'],
-        #             'full_name': node['full_name']
-        #         }
-        #         followings_list.append(follow)
-
-        # if self.jsonDump:
-        #     json_data['followings'] = followings_list
-        #     json_file_name = self.output_dir + "/" + self.target + "_followings.json"
-        #     with open(json_file_name, 'w') as f:
-        #         json.dump(json_data, f)
-
         return followings
 
     def check_not_following(self):
         response = self.getListOfNotFollowing()
+        if response is None:
+            return
 
         pc.printout(f"\nTotal results: {len(response)}\n", pc.BLUE)
 
@@ -180,13 +146,19 @@ class Garuda:
             content_data = self.get_followers()
         else:
             content_data = self.get_followings()
+        if content_data is None:
+            return None
         for user in content_data:
             contentList.append(user.get("username"))
         return sorted(contentList)
 
     def getListOfNotFollowing(self):
         followers_target = self.getListOf("followers")
+        if followers_target is None:
+            return None
         followings_target = self.getListOf("followings")
+        if followings_target is None:
+            return None
         return list(set(followings_target) - set(followers_target))
 
     def get_user(self, username):
@@ -225,7 +197,6 @@ class Garuda:
                 with open(settings_file) as file_data:
                     cached_settings = json.load(
                         file_data, object_hook=self.from_json)
-                # print('Reusing settings: {0!s}'.format(settings_file))
 
                 # reuse auth settings
                 self.api = AppClient(

@@ -7,14 +7,6 @@ from src import artwork
 import sys
 import signal
 
-is_windows = False
-
-try:
-    import gnureadline
-except:
-    is_windows = True
-    import pyreadline
-
 
 def printlogo():
     pc.printout(artwork.ascii_art, pc.YELLOW)
@@ -35,26 +27,9 @@ def signal_handler(sig, frame):
     sys.exit(0)
 
 
-def completer(text, state):
-    options = [i for i in commands if i.startswith(text)]
-    if state < len(options):
-        return options[state]
-    else:
-        return None
-
-
 def _quit():
     pc.printout("Goodbye!\n", pc.RED)
     sys.exit(0)
-
-
-signal.signal(signal.SIGINT, signal_handler)
-if is_windows:
-    pyreadline.Readline().parse_and_bind("tab: complete")
-    pyreadline.Readline().set_completer(completer)
-else:
-    gnureadline.parse_and_bind("tab: complete")
-    gnureadline.set_completer(completer)
 
 parser = argparse.ArgumentParser(
     description='Garuda is a OSINT tool on Instagram. It helps you in finding who haven\'t following you. ')
@@ -78,14 +53,7 @@ commands = {
     'exit': _quit
 }
 
-
 signal.signal(signal.SIGINT, signal_handler)
-if is_windows:
-    pyreadline.Readline().parse_and_bind("tab: complete")
-    pyreadline.Readline().set_completer(completer)
-else:
-    gnureadline.parse_and_bind("tab: complete")
-    gnureadline.set_completer(completer)
 
 if not args.command:
     printlogo()
@@ -95,16 +63,8 @@ while True:
         cmd = args.command
         _cmd = commands.get(args.command)
     else:
-        signal.signal(signal.SIGINT, signal_handler)
-        if is_windows:
-            pyreadline.Readline().parse_and_bind("tab: complete")
-            pyreadline.Readline().set_completer(completer)
-        else:
-            gnureadline.parse_and_bind("tab: complete")
-            gnureadline.set_completer(completer)
         pc.printout("\nRun a command: ", pc.YELLOW)
         cmd = input()
-
         _cmd = commands.get(cmd)
 
     if _cmd:
